@@ -3,8 +3,8 @@ const { Schema, model } = require('mongoose');
 const taskSchema = new Schema({
   title: String,
   description: String,
-  date: String,
-  id: Number,
+  date: String, // month day year
+  statusTask: true,
 });
 
-model.exports = model('Task', taskSchema);
+module.exports = model('Task', taskSchema);

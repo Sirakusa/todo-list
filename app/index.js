@@ -4,7 +4,7 @@ const router = require('./router');
 const config = require('./config');
 
 const app = express();
-
+// conectar a db
 app.use(json());
 
 router(app);
