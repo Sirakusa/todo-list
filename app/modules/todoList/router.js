@@ -1,19 +1,19 @@
 const { Router } = require('express');
 
 const {
-  allPending,
-  findById,
   createTask,
-  updateTask,
   readAll,
+  updateTask,
+  findTaskById,
+  deleteById,
 } = require('./controller');
 
 const routerList = Router({ mergeParams: true });
 
-routerList.get('/', allPending); //
-routerList.get('/', findById);
-routerList.post('/', createTask); //
-routerList.patch('/', updateTask); //
 routerList.get('/', readAll); //
+routerList.get('/:id', findTaskById);
+routerList.post('/', createTask); //
+routerList.patch('/:id', updateTask); //
+routerList.delete('/:id', deleteById);
 
 module.exports = routerList;
