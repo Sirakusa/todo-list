@@ -1,16 +1,15 @@
 // const validateTask = require('./validateTask');
-require('../../connection');
+require('./connection');
 
 const Task = require('./repository');
 const validateTask = require('./validateTask');
 
 async function createTask(req, res) {
-  const task = new Task(req.body);
-
   try {
-    validateTask(task);
-    const saveTask = await task.save();
-    res.send(saveTask);
+    const validatedData = await validateTask(req.body);
+    const task = new Task(validatedData);
+    await task.save();
+    res.send(task);
   } catch (err) {
     res.send(err);
   }
@@ -26,29 +25,37 @@ async function readAll(req, res) {
 }
 
 async function updateTask(req, res) {
-  const filter = req.params.id;
-  const Data = req.body.update;
-
   try {
-    const newDocument = await Task.findOneAndUpdate(filter, Data, {
+    const { id } = req.params;
+
+    const data = await validateTask(req.body);
+
+    const findTask = await Task.findOneAndUpdate({ _id: id }, data, {
       new: true,
     });
-    res.send(newDocument);
+    res.send(findTask);
+  } catch (error) {
+    res.send(error);
+  }
+}
+
+async function findTaskById(req, res) {
+  const { id } = req.params;
+
+  try {
+    const task = await Task.findById(id);
+    res.send(task);
   } catch (err) {
     res.send(err);
   }
 }
 
-async function findTaskById(req, res) {
-  const taskId = req.params.id;
-  
+async function deleteById(req, res) {
+  const { id } = req.params;
+
   try {
-    const task = await Task.findById(taskId).exec();
-    if (task) {
-      res.send(task);
-    } else {
-      res.send('not found');
-    }
+    const deleteDocument = await Task.deleteOne({ _id: id });
+    res.send(deleteDocument);
   } catch (err) {
     res.send(err);
   }
@@ -59,4 +66,5 @@ module.exports = {
   readAll,
   updateTask,
   findTaskById,
+  deleteById,
 };
